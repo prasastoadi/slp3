@@ -20,23 +20,23 @@ class EditDistance:
     def _compute(self):
         s_len = len(self.source)
         t_len = len(self.target)
-        D = [[i for i in range(t_len+1)] for i in range(s_len+1)]
+        distance = [[i for i in range(t_len+1)] for i in range(s_len+1)]
         pointer = [[i for i in range(t_len+1)] for i in range(s_len+1)]
 
         for j in range(t_len+1):
-            D[0][j] = j
+            distance[0][j] = j
             pointer[0][j]=[(0, j-1, 'ins')]
         for i in range(s_len+1):
-            D[i][0] = i
+            distance[i][0] = i
             pointer[i][0]=[(i-1, 0, 'de')]
 
         pointer[0][0] = [(0,0, 'null')]
 
         for i in range(1, s_len+1):
             for j in range(1, t_len+1):
-                ins = D[i][j-1]+self.cost[0]
-                de = D[i-1][j]+self.cost[1]
-                sub = D[i-1][j-1]+self.cost[2]*(self.source[i-1] != self.target[j-1])
+                ins = distance[i][j-1]+self.cost[0]
+                de = distance[i-1][j]+self.cost[1]
+                sub = distance[i-1][j-1]+self.cost[2]*(self.source[i-1] != self.target[j-1])
 
                 mini = min(ins, de, sub)
 
@@ -44,8 +44,8 @@ class EditDistance:
                               (i-1,j, 'de')*(de==mini),
                               (i-1,j-1, 'sub')*(sub == mini)]
                 pointer[i][j] = [x for x in directions if x]
-                D[i][j] = mini
-        self.distance_matrix = D
+                distance[i][j] = mini
+        self.distance_matrix = distance
         self.pointer_matrix = pointer
 
     def minimum(self):
